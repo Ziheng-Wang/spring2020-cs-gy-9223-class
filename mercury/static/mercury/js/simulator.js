@@ -66,6 +66,85 @@ $(function () {
         });
     }
 
+    // Wind Speed Sensor
+    let button_counter_wds = 0;
+    let buttonpressed_wds;//submit botton for wds is pressed -> name of the button -> know which one is pressed
+    let interval_var_wds;
+    $('.submitbutton_wds,.submitbutton_all').click(function () {
+        buttonpressed_wds = $(this).attr('name')
+    });
+    $('#WindSpeedForm,#AllSensorsForm').on('submit', function (event) {
+        event.preventDefault();
+        if (buttonpressed_wds == "Continuous" && button_counter_wds != 1) {
+            console.log("Continuous Submission enabled for Wind Speed panel");
+            create_post_wds();
+            button_counter_wds = 1;// 0 -> 1
+            interval_var_wds = setInterval(create_post_wds, 2000); // 2000 time -> call create_post_wds
+            setTimeout(clear_interval_wds, timeOut);
+        } else if (buttonpressed_wds == "Once") {
+            console.log("Wind Speed Submit Once button was pressed.");
+            if (interval_var_wds) {
+                clearInterval(interval_var_wds);
+                button_counter_wds = 0;
+            }
+            create_post_wds();
+        } else if (buttonpressed_wds == "Stop") {
+            console.log("Stopping continuous submission for Wind Speed panel.");
+            if (interval_var_wds) {
+                clearInterval(interval_var_wds);
+                button_counter_wds = 0;
+            }
+        }
+    });
+
+    function create_post_wds() {
+        //fail
+        console.log("Entered create_post_wds() wds function.");
+        let dateTime_wds = getDateTimenow();
+        $.ajax({
+            url: "", // the endpoint
+            type: "POST", // http method
+            data: {
+                created_at_wds: dateTime_wds,
+                current_wind_speed: $('#post-current-wind-speed').val(),
+            }, // data sent with the post request
+            // handle a successful response
+//            success: function () {
+//                let current_wind_speed = parseFloat($('#post-current-wind-speed').val());
+//                if (current_wind_speed <= 10) {
+//                    current_wind_speed += 90;
+//                } else {
+//                    current_wind_speed -= getRandomNumber(0, 5);
+//                }
+//                $('#post-created-at-wds').val(dateTime_wds);
+//                $('#post-current-wind-speed').val(roundOffAndParse(current_wind_speed));
+//
+//                console.log("POSTing was successful for wds"); // another sanity check
+//            },
+
+            success: function () {
+                let current_wind_speed = parseFloat($('#post-current-wind-speed').val());
+                $('#post-created-at-wds').val(dateTime_wds);
+                $('#post-current-wind-speed').val(getNextValue(current_wind_speed, -10, 50));
+                console.log("POSTing was successful for wind speed"); // another sanity check
+            },
+
+            // handle a non-successful response
+            error: function (xhr, errmsg, err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    }
+
+    function clear_interval_wds() {
+        if (interval_var_wds) {
+            clearInterval(interval_var_wds);
+            button_counter_wds = 0;
+        }
+    }
+
     // Acceleration Sensor
     let button_counter_accel = 0;
     let buttonpressed_accel;
@@ -288,7 +367,7 @@ $(function () {
 
     // Fuel Level Sensor
     let button_counter_fl = 0;
-    let buttonpressed_fl;
+    let buttonpressed_fl;//submit botton for fl is pressed -> name of the button -> know which one is pressed
     let interval_var_fl;
     $('.submitbutton_fl,.submitbutton_all').click(function () {
         buttonpressed_fl = $(this).attr('name')
@@ -298,8 +377,8 @@ $(function () {
         if (buttonpressed_fl == "Continuous" && button_counter_fl != 1) {
             console.log("Continuous Submission enabled for Fuel Level panel");
             create_post_fl();
-            button_counter_fl = 1;
-            interval_var_fl = setInterval(create_post_fl, 2000);
+            button_counter_fl = 1;// 0 -> 1
+            interval_var_fl = setInterval(create_post_fl, 2000); // 2000 time -> call create_post_fl
             setTimeout(clear_interval_fl, timeOut);
         } else if (buttonpressed_fl == "Once") {
             console.log("Fuel Level Submit Once button was pressed.");
@@ -350,12 +429,15 @@ $(function () {
         });
     }
 
+
     function clear_interval_fl() {
         if (interval_var_fl) {
             clearInterval(interval_var_fl);
             button_counter_fl = 0;
         }
     }
+
+
 
     // This function returns current date time in the format "yyyy-mm-dd hh:min:ss"
     function getDateTimenow() {
