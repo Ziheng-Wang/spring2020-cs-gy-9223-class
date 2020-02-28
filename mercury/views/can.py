@@ -145,7 +145,7 @@ def post(request, *args, **kwargs):
             return _bad_request({}, msg)
         else:
             can_msg = request.body
-
+    # right
     try:
         decoder = CANDecoder(can_msg)
     except (MessageLengthException, BadInputException) as e:

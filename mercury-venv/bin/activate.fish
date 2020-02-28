@@ -29,7 +29,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/zihengwang/Desktop/Project/spring2020-cs-gy-9223-class/mercury-venv"
+set -gx VIRTUAL_ENV "/Users/zihengwang/Desktop/Project code/spring2020-cs-gy-9223-class/mercury-venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

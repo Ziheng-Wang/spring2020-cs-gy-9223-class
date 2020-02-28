@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/zihengwang/Desktop/Project/spring2020-cs-gy-9223-class/mercury-venv"
+VIRTUAL_ENV="/Users/zihengwang/Desktop/Project code/spring2020-cs-gy-9223-class/mercury-venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
